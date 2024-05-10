@@ -44,13 +44,14 @@ public class Config {
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(context);
 
-        switch (prefs.getString(PREF_KEY_PROVIDER, "1")) {
-            case "0":
-                return new OpenWeatherMapProvider(context);
-            case "1":
-                return new METNorwayProvider(context);
+        switch (prefs.getString(PREF_KEY_PROVIDER, "0")) {
             default:
+            case "0":
+                return new MeteoWeatherProvider(context);
+            case "1":
                 return new OpenWeatherMapProvider(context);
+            case "2":
+                return new METNorwayProvider(context);
         }
     }
 
@@ -60,12 +61,13 @@ public class Config {
 
         String provider = prefs.getString(PREF_KEY_PROVIDER, "1");
         switch (provider) {
-            case "0":
-                return "OpenWeatherMap";
-            case "1":
-                return "MET Norway";
             default:
+            case "0":
+                return "Open-Meteo";
+            case "1":
                 return "OpenWeatherMap";
+            case "2":
+                return "MET Norway";
         }
     }
 
