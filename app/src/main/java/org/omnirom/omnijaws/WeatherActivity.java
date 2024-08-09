@@ -22,7 +22,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.android.internal.util.everest.OmniJawsClient;
+import com.android.internal.util.mist.OmniJawsClient;
 
 import java.util.Calendar;
 
