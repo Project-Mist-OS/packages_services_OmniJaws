@@ -20,7 +20,7 @@ import android.app.Application
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.lifecycle.AndroidViewModel
-import com.android.internal.util.android.OmniJawsClient
+import com.android.internal.util.mist.OmniJawsClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

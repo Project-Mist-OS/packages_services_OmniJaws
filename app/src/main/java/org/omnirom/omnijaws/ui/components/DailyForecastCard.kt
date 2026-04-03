@@ -49,7 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
-import com.android.internal.util.android.OmniJawsClient
+import com.android.internal.util.mist.OmniJawsClient
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
