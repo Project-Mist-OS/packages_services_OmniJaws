@@ -76,6 +76,9 @@
     <string name="theme_dark">Dark</string>
     <string name="theme_light">Light</string>
     <string name="color_theme_title">Theme</string>
+    <string name="icon_theme_title">Icon theme</string>
+    <string name="icon_theme_follow_app">Follow app icon</string>
+    <string name="icon_theme_follow_widget">Follow widget theme</string>
     <string name="bg_transparency_title">Transparency</string>
     <string name="trans_semi">Semi-transparent</string>
     <string name="trans_full">Transparent</string>
