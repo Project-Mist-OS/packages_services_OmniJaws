@@ -56,6 +56,7 @@ fun WeatherSettingsScreen(
     onCustomLocationChanged: (Boolean) -> Unit,
     onLocationPickerClick: () -> Unit,
     onIconPackChanged: (String) -> Unit,
+    onIconVariantModeChanged: (String) -> Unit,
     onOwmKeyChanged: (String) -> Unit,
     onRequestLocationPermission: () -> Unit
 ) {
@@ -164,11 +165,22 @@ fun WeatherSettingsScreen(
                         item {
                             ListPreference(
                                 title = "Icon pack",
-                                summary = state.iconPacks.firstOrNull { it.value == state.iconPack }?.label,
+                                summary = state.iconPackLabel,
                                 options = state.iconPacks.map { it.value to it.label },
                                 value = state.iconPack,
                                 onValueChange = onIconPackChanged
                             )
+                        }
+                        if (state.selectedIconPackSupportsVariants) {
+                            item {
+                                ListPreference(
+                                    title = "Icon theme",
+                                    summary = state.iconVariantLabel,
+                                    options = state.iconVariantOptions,
+                                    value = state.iconVariantMode,
+                                    onValueChange = onIconVariantModeChanged
+                                )
+                            }
                         }
                     }
                 }

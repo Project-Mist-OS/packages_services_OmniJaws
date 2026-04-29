@@ -17,7 +17,6 @@ package org.omnirom.omnijaws.ui
 
 import android.Manifest
 import android.app.Application
-import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.lifecycle.AndroidViewModel
 import com.android.internal.util.mist.OmniJawsClient
@@ -27,8 +26,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import org.omnirom.omnijaws.Config
 import org.omnirom.omnijaws.WeatherUpdateService
 import org.omnirom.omnijaws.widget.WeatherAppWidgetProvider
+import org.omnirom.omnijaws.WeatherIconPackManager
 
-data class IconPackItem(val label: String, val value: String)
+data class IconPackItem(
+    val label: String,
+    val value: String,
+    val supportsVariants: Boolean
+)
 
 data class SettingsUiState(
     val enabled: Boolean = false,
@@ -38,6 +42,7 @@ data class SettingsUiState(
     val customLocation: Boolean = false,
     val locationName: String = "",
     val iconPack: String = "",
+    val iconVariantMode: String = Config.ICON_VARIANT_AUTO,
     val owmKey: String = "",
     val lastUpdateTime: String = "",
     val iconPacks: List<IconPackItem> = emptyList(),
@@ -61,6 +66,27 @@ data class SettingsUiState(
         "12" -> "12 hours"
         else -> "$updateInterval hours"
     }
+    val selectedIconPack: IconPackItem?
+        get() = iconPacks.firstOrNull { it.value == iconPack }
+
+    val iconPackLabel: String
+        get() = selectedIconPack?.label ?: iconPack
+
+    val selectedIconPackSupportsVariants: Boolean
+        get() = selectedIconPack?.supportsVariants == true
+
+    val iconVariantLabel: String get() = when (iconVariantMode) {
+        Config.ICON_VARIANT_LIGHT -> "Light"
+        Config.ICON_VARIANT_DARK -> "Dark"
+        else -> "Automatic"
+    }
+
+    val iconVariantOptions: List<Pair<String, String>> get() = listOf(
+        Config.ICON_VARIANT_AUTO to "Automatic",
+        Config.ICON_VARIANT_LIGHT to "Light",
+        Config.ICON_VARIANT_DARK to "Dark"
+    )
+
 }
 
 class SettingsViewModel(application: Application) : AndroidViewModel(application) {
@@ -72,6 +98,8 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     fun loadSettings() {
         val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(ctx)
+        val iconPacks = loadIconPacks()
+
         _uiState.value = SettingsUiState(
             enabled = Config.isEnabled(ctx),
             provider = prefs.getString(Config.PREF_KEY_PROVIDER, "1") ?: "1",
@@ -80,9 +108,10 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
             customLocation = prefs.getBoolean(Config.PREF_KEY_CUSTOM_LOCATION, false),
             locationName = Config.getLocationName(ctx) ?: "",
             iconPack = Config.getIconPack(ctx) ?: DEFAULT_ICON_PACK,
+            iconVariantMode = Config.getIconVariantMode(ctx),
+            iconPacks = iconPacks,
             owmKey = Config.getOwmKey(ctx) ?: "",
             lastUpdateTime = queryLastUpdate(),
-            iconPacks = loadIconPacks(),
             hasLocationPermission = ctx.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
         )
     }
@@ -136,8 +165,25 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun setIconPack(value: String) {
+        val selectedPack = _uiState.value.iconPacks.firstOrNull { it.value == value }
+        val variantMode = if (selectedPack?.supportsVariants == true) {
+            _uiState.value.iconVariantMode
+        } else {
+            Config.ICON_VARIANT_AUTO
+        }
+
         Config.setIconPack(ctx, value)
-        _uiState.value = _uiState.value.copy(iconPack = value)
+        Config.setIconVariantMode(ctx, variantMode)
+        _uiState.value = _uiState.value.copy(
+            iconPack = value,
+            iconVariantMode = variantMode
+        )
+        scheduleUpdate()
+    }
+
+    fun setIconVariantMode(value: String) {
+        Config.setIconVariantMode(ctx, value)
+        _uiState.value = _uiState.value.copy(iconVariantMode = value)
         scheduleUpdate()
     }
 
@@ -167,31 +213,16 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     }
 
     private fun loadIconPacks(): List<IconPackItem> {
-        val pm = ctx.packageManager
-        val result = mutableListOf<IconPackItem>()
-        val defaultList = mutableListOf<IconPackItem>()
-
-        val intent = Intent().setAction("org.omnirom.WeatherIconPack")
-        for (r in pm.queryIntentActivities(intent, 0)) {
-            val label = r.activityInfo.loadLabel(pm)?.toString() ?: r.activityInfo.packageName
-            val value = r.activityInfo.name
-            if (r.activityInfo.packageName == "org.omnirom.omnijaws" && value.contains("google_new_light")) {
-                defaultList.add(IconPackItem(label, value))
-            } else {
-                result.add(IconPackItem(label, value))
-            }
+        return WeatherIconPackManager.load(ctx).map {
+            IconPackItem(
+                label = it.label,
+                value = it.value,
+                supportsVariants = it.hasExplicitVariants()
+            )
         }
-
-        val chronusIntent = Intent(Intent.ACTION_MAIN).addCategory("com.dvtonder.chronus.ICON_PACK")
-        for (r in pm.queryIntentActivities(chronusIntent, 0)) {
-            val label = r.activityInfo.loadLabel(pm)?.toString() ?: r.activityInfo.packageName
-            result.add(IconPackItem(label, r.activityInfo.packageName + ".weather"))
-        }
-
-        return defaultList + result
     }
 
     companion object {
-        const val DEFAULT_ICON_PACK = "org.omnirom.omnijaws.google_new_light"
+        const val DEFAULT_ICON_PACK = "org.omnirom.omnijaws.nothing"
     }
 }
