@@ -276,23 +276,23 @@
         </activity>
 
         <activity
-            android:name=".nothing_light"
+            android:name=".nothing"
             android:exported="false"
-            android:label="Nothing Light" >
+            android:label="Nothing" >
             <intent-filter>
                 <action android:name="org.omnirom.WeatherIconPack" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>
 
-        <activity
-            android:name=".nothing_dark"
-            android:exported="false"
-            android:label="Nothing Dark" >
-            <intent-filter>
-                <action android:name="org.omnirom.WeatherIconPack" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+            <meta-data
+                android:name="org.omnirom.omnijaws.SUPPORTS_THEMED_VARIANTS"
+                android:value="true" />
+            <meta-data
+                android:name="org.omnirom.omnijaws.LIGHT_PREFIX"
+                android:value="nothing_light" />
+            <meta-data
+                android:name="org.omnirom.omnijaws.DARK_PREFIX"
+                android:value="nothing_dark" />
         </activity>
 
         <receiver
@@ -302,6 +302,7 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.intent.action.LOCALE_CHANGED" />
+                <action android:name="android.intent.action.CONFIGURATION_CHANGED" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
