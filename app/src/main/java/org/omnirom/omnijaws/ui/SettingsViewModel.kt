@@ -223,6 +223,6 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
     }
 
     companion object {
-        const val DEFAULT_ICON_PACK = "org.omnirom.omnijaws.nothing"
+        const val DEFAULT_ICON_PACK = "org.omnirom.omnijaws.google_new"
     }
 }

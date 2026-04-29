@@ -256,29 +256,29 @@
         </activity>
 
         <activity
-            android:name=".google_new_light"
+            android:name=".google_new"
             android:exported="false"
-            android:label="Google New Light" >
+            android:label="Google New (Light / Dark)" >
             <intent-filter>
                 <action android:name="org.omnirom.WeatherIconPack" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>
 
-        <activity
-            android:name=".google_new_dark"
-            android:exported="false"
-            android:label="Google New Dark" >
-            <intent-filter>
-                <action android:name="org.omnirom.WeatherIconPack" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+            <meta-data
+                android:name="org.omnirom.omnijaws.SUPPORTS_THEMED_VARIANTS"
+                android:value="true" />
+            <meta-data
+                android:name="org.omnirom.omnijaws.LIGHT_PREFIX"
+                android:value="google_new_light" />
+            <meta-data
+                android:name="org.omnirom.omnijaws.DARK_PREFIX"
+                android:value="google_new_dark" />
         </activity>
 
         <activity
             android:name=".nothing"
             android:exported="false"
-            android:label="Nothing" >
+            android:label="Nothing (Light / Dark)" >
             <intent-filter>
                 <action android:name="org.omnirom.WeatherIconPack" />
                 <category android:name="android.intent.category.DEFAULT" />
