@@ -15,6 +15,7 @@
 
 
 
+
     <!-- Settings -->
     <string name="weather_config_title">Параметры службы</string>
     <string name="category_general">Общие</string>
@@ -101,6 +102,11 @@
     <!-- Pressure unit symbol -->
     <string name="unit_hpa" translatable="false">гПа</string>
 
+    <!-- Pressure level descriptors -->
+    <string name="pressure_level_low">Низкое</string>
+    <string name="pressure_level_normal">Нормальное</string>
+    <string name="pressure_level_high">Высокое</string>
+
     <!-- Daylight duration, e.g. "11h 23m". %1$d = hours, %2$d = minutes -->
     <string name="daylight_duration_format">%1$dч %2$dм</string>
 
@@ -127,7 +133,6 @@
     <!-- Widget -->
     <string name="weather_widget">Погода</string>
     <string name="weather_widget_desc">"Текущая погода и прогноз на несколько дней"</string>
-    <string name="weather_tile_title">Погода</string>
     <string name="omnijaws_service_disabled">Служба отключена</string>
     <string name="omnijaws_service_error_long">Ошибка загрузки данных о погоде</string>
     <string name="omnijaws_service_error_location">Местоположение недоступно</string>
